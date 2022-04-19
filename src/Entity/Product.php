@@ -66,4 +66,16 @@ class Product
 
         return $this;
     }
+
+    public function getFarm(): ?Farm
+    {
+        return $this->farm;
+    }
+
+    public function setFarm(?Farm $farm): self
+    {
+        $this->farm = $farm;
+
+        return $this;
+    }
 }

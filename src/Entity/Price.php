@@ -4,25 +4,20 @@ namespace App\Entity;
 
 use App\Repository\PriceRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\GreaterThan;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
-#[ORM\Entity(repositoryClass: PriceRepository::class)]
+#[ORM\Embeddable()]
 class Price
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
-
-    #[ORM\Column(type: 'integer')]
-    private $unitPrice;
+    #[NotBlank()]
+    #[GreaterThan(0)]
+    private $unitPrice = 0;
 
     #[ORM\Column(type: 'float')]
-    private $vat;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    #[NotBlank()]
+    private $vat = 0;
 
     public function getUnitPrice(): ?int
     {
