@@ -1,5 +1,6 @@
 const Encore = require('@symfony/webpack-encore');
 
+
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
 if (!Encore.isRuntimeEnvironmentConfigured()) {
@@ -31,6 +32,8 @@ Encore
     // will require an extra script tag for runtime.js
     // but, you probably want this, unless you're building a single-page app
     .enableSingleRuntimeChunk()
+    .enablePostCssLoader()
+
 
     /*
      * FEATURE CONFIG
