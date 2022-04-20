@@ -15,7 +15,7 @@ class Producer extends User
     #[ORM\Column(type: 'integer')]
     private $id;
     
-    public const ROLE = 'ROLE_PRODUCER';
+    public const ROLE = 'producer';
 
     public function getId(): ?int
     {

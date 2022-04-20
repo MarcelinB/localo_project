@@ -14,13 +14,22 @@
 					Vous êtes au bon endroit
 				</span>
 			</h2>
+			{% if is_granted('ROLE_USER') %}
+
+			{% else %}
+
+			
 			<div class="lg:mt-0 lg:flex-shrink-0">
-				<div class="mt-12 inline-flex rounded-md shadow">
-					<button type="button" class="py-4 px-6  bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 focus:ring-offset-indigo-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg ">
+				<div class="space-x-4 mt-12 inline-flex rounded-md shadow">
+					<a href="login"><button type="button" class="py-4 px-6  bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 focus:ring-offset-indigo-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg ">
 					Se connecter
-					</button>
+					</button></a>
+					<a href="login"><button type="button" class="py-4 px-6  bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 focus:ring-offset-indigo-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg ">
+					S'inscrire
+					</button></a>
 				</div>
 			</div>
+			{% endif %}
 		</div>
 		<img src="https://static.vecteezy.com/ti/vecteur-libre/p2/4930354-carotte-vector-line-for-web-presentation-logo-icon-symbol-gratuit-vectoriel.jpg" class="absolute h-full max-w-1/2 hidden lg:block right-0 top-0"/>
 	</div>

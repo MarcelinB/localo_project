@@ -13,7 +13,7 @@ class Customer extends User
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    public const ROLE = 'ROLE_CUSTOMER';
+    public const ROLE = 'customer';
 
     public function getId(): ?int
     {
