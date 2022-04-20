@@ -4,10 +4,11 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-class User
+class User implements UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -20,7 +21,7 @@ class User
     #[ORM\Column(type: 'string', length: 255)]
     private $lastName;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, unique:true)]
     private $email;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -28,6 +29,18 @@ class User
 
     #[ORM\Column(type: 'datetime_immutable')]
     private $registeredAt;
+
+    public function getRoles(): array {
+        return ['ROLE_USER'];
+    }
+
+    public function eraseCredentials() {
+
+    }
+
+    public function getUserIdentifier(): string {
+        return $this->lastName;
+    }
 
     public function getId(): ?int
     {

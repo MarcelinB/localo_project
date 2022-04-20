@@ -8,10 +8,14 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ProducerRepository::class)]
 class Producer extends User
 {
+
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
+    
+    public const ROLE = 'ROLE_PRODUCER';
 
     public function getId(): ?int
     {
