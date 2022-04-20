@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -37,7 +38,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->gotAFarm = false;
+        $this->gotAFarm = true;
     }
 
     public function getId(): ?int
@@ -77,6 +78,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastName(string $lastName): self
     {
         $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    public function getGotAFarm(): Bool
+    {
+        return $this->gotAFarm;
+    }
+
+    public function setGotAFarm(bool $gotAFarm): self
+    {
+        $this->gotAFarm = $gotAFarm;
 
         return $this;
     }

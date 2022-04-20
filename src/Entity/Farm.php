@@ -26,6 +26,9 @@ class Farm
     #[ORM\Column(type: 'string', length: 255)]
     private $adress;
 
+    #[ORM\Column(type: 'string', length: 255)]
+    private $ville;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +78,18 @@ class Farm
     public function setProducer(?User $producer): self
     {
         $this->producer = $producer;
+
+        return $this;
+    }
+
+    public function getVille(): ?string
+    {
+        return $this->ville;
+    }
+
+    public function setVille(string $ville): self
+    {
+        $this->ville = $ville;
 
         return $this;
     }
