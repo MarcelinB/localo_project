@@ -32,6 +32,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private $password;
 
+    #[ORM\Column(type: 'boolean')]
+    private $gotAFarm;
+
+    public function __construct()
+    {
+        $this->gotAFarm = false;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

@@ -13,6 +13,10 @@ class Farm
     #[ORM\Column(type: 'integer')]
     private $id;
 
+    #[ORM\ManyToOne(targetEntity: "User")]
+    #[ORM\JoinColumn(onDelete:"Cascade")]
+    private User $producer;
+
     #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
@@ -59,6 +63,18 @@ class Farm
     public function setAdress(string $adress): self
     {
         $this->adress = $adress;
+
+        return $this;
+    }
+
+    public function getProducer(): ?User
+    {
+        return $this->producer;
+    }
+
+    public function setProducer(?User $producer): self
+    {
+        $this->producer = $producer;
 
         return $this;
     }

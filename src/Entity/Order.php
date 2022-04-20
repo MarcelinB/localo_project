@@ -29,9 +29,9 @@ class Order
     #[ORM\Column(type: 'string', length: 255)]
     private $state;
 
-    #[ORM\ManyToOne(targetEntity: "Customer")]
+    #[ORM\ManyToOne(targetEntity: "User")]
     #[ORM\JoinColumn(onDelete:"Cascade")]
-    private Customer $customer;
+    private User $customer;
 
     #[ORM\ManyToOne(targetEntity: "Farm")]
     #[ORM\JoinColumn(onDelete:"Cascade")]
@@ -103,12 +103,12 @@ class Order
         return $this;
     }
 
-    public function getCustomer(): ?Customer
+    public function getCustomer(): ?User
     {
         return $this->customer;
     }
 
-    public function setCustomer(?Customer $customer): self
+    public function setCustomer(?User $customer): self
     {
         $this->customer = $customer;
 
