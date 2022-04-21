@@ -61,18 +61,4 @@ class FarmController extends AbstractController
 
     }
 
-    #[Route('/farm/list', name: 'list_farm')]
-    public function list(FarmRepository $farmRepository)
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-        $userId = $user->getId();
-        $farm = $farmRepository->findOneByProducer($userId);
-        
-        return $this->render('farm/consult.html.twig', [
-            'farm'=>$farm
-        ]
-    );
-
-    }
 }
