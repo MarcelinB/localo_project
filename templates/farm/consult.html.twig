@@ -4,23 +4,12 @@
 {% endblock %}
 
 {% block body %}
-	<main class="container display-flex">
-		<div class="">
-			<div>
-				{{ farm.name }}
-			</div>
-			<div class="">
-				<img src="{{ asset('uploads/' ~ farm.image) }}" style="width:50%" alt="{{ farm.name }}">
-			</div>
-			<div>
-				<button>Gerer mes stocks</button>
-			</div>
-			<div>
-				<button>Modifier ma ferme</button>
-			</div>
-			<div>
-				<button>Modifier ma ferme</button>
-			</div>
-		</div>
-	</main>
-{% endblock %}
+	<div class="flex flex-row relative  min-h-screen  bg-gradient-to-r from-rose-100 to-teal-100">
+		{% include "component/sidebar_farm.html.twig" %}
+		<div class="container mx-auto mt-10 max-w-2xl">
+        <img src="{{ asset('uploads/' ~ farm.image) }}" class="mw-100" alt="{{ farm.name }}">
+        </div>
+
+	</div>
+
+</div>{% endblock %}
