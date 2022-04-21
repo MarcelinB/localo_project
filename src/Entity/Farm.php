@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\FarmRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints\Image;
 
 #[ORM\Entity(repositoryClass: FarmRepository::class)]
 class Farm
@@ -22,6 +24,9 @@ class Farm
 
     #[ORM\Column(type: 'string', length: 255)]
     private $image;
+
+    #[Image()]
+    private ?UploadedFile $imageFile = null;
 
     #[ORM\Column(type: 'string', length: 255)]
     private $adress;
@@ -92,5 +97,17 @@ class Farm
         $this->ville = $ville;
 
         return $this;
+    }
+
+    public function setImageFile (?UploadedFile $imageFile): self
+    {
+        $this->imageFile = $imageFile;
+
+        return $this;
+    }
+
+    public function getImageFile() : ?UploadedFile
+    {
+        return $this->imageFile;
     }
 }
