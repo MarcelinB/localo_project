@@ -10,11 +10,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Uid\Uuid;
 
 class FarmController extends AbstractController
 {
     #[Route('/farm/create', name: 'create_farm')]
-    public function create(Request $request, EntityManagerInterface $entityManager): Response
+    public function create(Request $request, EntityManagerInterface $entityManager, string $uploadDir): Response
     {
         $farm = new Farm();
 
@@ -28,7 +29,8 @@ class FarmController extends AbstractController
         $form->handleRequest($request);
         
         if($form->isSubmitted()&& $form->isValid()){
-            
+            $farm->setImage(sprintf('%s.%s', Uuid::v4(), $farm->getImageFile()->getClientOriginalExtension()));
+            $farm->getImageFile()->move(directory: $uploadDir, name: $farm->getImage());
             $entityManager->persist($farm);
             $entityManager->flush();
 
@@ -41,5 +43,12 @@ class FarmController extends AbstractController
         return $this->renderForm('farm/create.html.twig', parameters: [
             'formFarm'=> $form
         ]);
+    }
+
+    #[Route('/farm/consult', name: 'consult_farm')]
+    public function consult()
+    {
+        return $this->render('farm/consult.html.twig');
+
     }
 }

@@ -18,7 +18,7 @@ class CreateFarmType extends AbstractType
                 'label' => 'Nom de la ferme',
                 'empty_data' => ''
             ])
-            ->add('image', type:FileType::class, options: [
+            ->add('imageFile', type:FileType::class, options: [
                 'label' => 'Photo',
             ])
             ->add('adress', TextType::class, options: [
