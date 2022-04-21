@@ -45,6 +45,16 @@ class FarmRepository extends ServiceEntityRepository
         }
     }
 
+    public function findOneByProducer($id): ?Farm
+    {
+        return $this->createQueryBuilder('f')
+            ->andWhere('f.producer = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
     // /**
     //  * @return Farm[] Returns an array of Farm objects
     //  */

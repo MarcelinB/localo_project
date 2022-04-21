@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Farm;
 use App\Entity\User;
 use App\Form\CreateFarmType;
+use App\Repository\FarmRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -46,9 +47,17 @@ class FarmController extends AbstractController
     }
 
     #[Route('/farm/consult', name: 'consult_farm')]
-    public function consult()
+    public function consult(FarmRepository $farmRepository)
     {
-        return $this->render('farm/consult.html.twig');
+        /** @var User $user */
+        $user = $this->getUser();
+        $userId = $user->getId();
+        $farm = $farmRepository->findOneByProducer($userId);
+        
+        return $this->render('farm/consult.html.twig', [
+            'farm'=>$farm
+        ]
+    );
 
     }
 }

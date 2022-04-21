@@ -1,7 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ma ferme{% endblock %}
+{% block title %}Ma ferme
+{% endblock %}
 
 {% block body %}
-WESH LA ZONE
+	<main class="container display-flex">
+		<div class="">
+			<div>
+				{{ farm.name }}
+			</div>
+			<div class="">
+				<img src="{{ asset('uploads/' ~ farm.image) }}" style="width:50%" alt="{{ farm.name }}">
+			</div>
+			<div>
+				<button>Gerer mes stocks</button>
+			</div>
+			<div>
+				<button>Modifier ma ferme</button>
+			</div>
+			<div>
+				<button>Modifier ma ferme</button>
+			</div>
+		</div>
+	</main>
 {% endblock %}
