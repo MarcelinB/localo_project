@@ -70,8 +70,13 @@ class ProductController extends AbstractController
     #[Route('/product/{id}/updatestock', name: 'updatestock_product', requirements: ['id' => '\d+'])]
     public function updateStock(Product $product, EntityManagerInterface $entityManager): Response
     {
+        
+        $newQtt = $_POST['qtt'];
+        if ($_POST['mesure']=== 'kg'){
+            $newQtt = $newQtt * 1000;
+        }
         $oldQtt = $product->getQuantity();
-        $product->setQuantity($oldQtt + $_POST['qtt']);
+        $product->setQuantity($oldQtt + $newQtt);
         $entityManager->flush();
         return $this->redirectToRoute(route:'gestionstock', parameters: [
                 
