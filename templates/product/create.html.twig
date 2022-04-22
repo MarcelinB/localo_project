@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ProductController!
+{% endblock %}
+
+{% block body %}
+	{{ form_start(formProd) }}
+        {{ form_widget(formProd) }}
+
+        <button type="submit" class='mt-4 bg-indigo-500 hover:bg-indigo-200 text-white rounded p-4 w-full'>Créer ma ferme</button>
+    {{ form_end(formProd) }}
+</div>
+{% endblock %}

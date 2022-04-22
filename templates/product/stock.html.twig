@@ -4,20 +4,32 @@
 {% endblock %}
 
 {% block body %}
-	<div class="flex flex-row relative  min-h-screen  bg-gradient-to-r from-rose-100 to-teal-100">
-		{% include "component/sidebar_farm.html.twig" %}
-		<div class="flex flex-row">
-			<a href=""><svg class="h-8 w-8 text-indigo-500" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-				<circle cx="12" cy="12" r="10"/>
-				<line x1="12" y1="8" x2="12" y2="16"/>
-				<line x1="8" y1="12" x2="16" y2="12"/></svg>
-                Ajouter un nouveau produit
-		</a></div>
+	<div class=" flex flex-row relative  min-h-screen  bg-gradient-to-r from-rose-100 to-teal-100">
+		<div class="">
+			{% include "component/sidebar_farm.html.twig" %}</div>
+		<div class="container ">
+			<div class="flex flex-row place-content-center mt-6">
+				<div class="">
+					<a href="">
 
+						<svg class="h-8 w-8 text-indigo-500" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<circle cx="12" cy="12" r="10"/>
+							<line x1="12" y1="8" x2="12" y2="16"/>
+							<line x1="8" y1="12" x2="16" y2="12"/></svg>
+					</a>
+				</div>
+				<div class="ml-3">Ajouter un nouveau produit</div>
+			</div>
+			<div class="">
 
-		{% for product in products %}
-			{{product.name}}
+				{% for product in products %}
+					{{product.name}}
+					<img src="{{ asset('uploads/' ~ product.image) }}" alt="{{product.name}}">
+					
+					{{product.quantity}} grammes
 
-		{% endfor %}
+				{% endfor %}
+			</div>
+		</div>
 	</div>
 {% endblock %}

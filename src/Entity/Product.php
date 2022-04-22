@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints\Image;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
@@ -18,6 +20,9 @@ class Product
 
     #[ORM\Column(type: 'string', length: 255)]
     private $image;
+
+    #[Image()]
+    private ?UploadedFile $imageFile = null;
 
     #[ORM\Column(type: 'integer')]
     private $quantity;
@@ -77,5 +82,17 @@ class Product
         $this->farm = $farm;
 
         return $this;
+    }
+
+    public function setImageFile (?UploadedFile $imageFile): self
+    {
+        $this->imageFile = $imageFile;
+
+        return $this;
+    }
+
+    public function getImageFile() : ?UploadedFile
+    {
+        return $this->imageFile;
     }
 }
