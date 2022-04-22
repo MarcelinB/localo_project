@@ -4,13 +4,13 @@
 {% endblock %}
 
 {% block body %}
-	<div class=" flex flex-row relative  min-h-screen  bg-gradient-to-r from-rose-100 to-teal-100">
+	<div class="flex flex-row relative  min-h-screen  bg-gradient-to-r from-rose-100 to-teal-100">
 		<div class="">
 			{% include "component/sidebar_farm.html.twig" %}</div>
 		<div class="container ">
 			<div class="flex flex-row place-content-center mt-6">
 				<div class="">
-					<a href="">
+					<a href="{{ path('create_product') }}">
 
 						<svg class="h-8 w-8 text-indigo-500" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 							<circle cx="12" cy="12" r="10"/>
@@ -20,16 +20,36 @@
 				</div>
 				<div class="ml-3">Ajouter un nouveau produit</div>
 			</div>
-			<div class="">
 
+			<div class="border-4 border-black flex flex-row relative  min-h-screen">
 				{% for product in products %}
-					{{product.name}}
-					<img src="{{ asset('uploads/' ~ product.image) }}" alt="{{product.name}}">
-					
-					{{product.quantity}} grammes
-
+					<div
+						class="border-4 border-rose-500 w-64">
+						
+						<div
+							class=" flex flex-col justify-center bg-white rounded-2xl shadow-xl shadow-slate-300/60">
+							<!-- img -->
+							<img
+							class="aspect-video w-96 rounded-t-2xl object-cover object-center" src="{{ asset('uploads/' ~ product.image) }}"/>
+							<!-- text information -->
+							<div class="p-4">
+								<small class="text-blue-400 text-xs">{{product.name|upper}}</small>
+								<h1 class="text-2xl font-medium text-slate-600 pb-2">{{product.quantity}}
+									grammes</h1>
+							</div>
+							<form method="post" action="{{path('updatestock_product', {id: product.id})}}">
+								<div class="">
+									Ajouter
+									<input class="w-20"type="number" name="qtt" id="">
+									g</div>
+								<button type="submit">Ajouter</button>
+							</form>
+						</div>
+					</div>
 				{% endfor %}
 			</div>
 		</div>
 	</div>
+	<!-- background -->
+
 {% endblock %}

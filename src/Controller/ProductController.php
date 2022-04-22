@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Entity\Farm;
 use App\Entity\Product;
 use App\Form\CreateNewProductType;
+use App\Form\UpdateQuantityroductType;
 use App\Repository\FarmRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,7 +19,7 @@ use Symfony\Component\Uid\Uuid;
 class ProductController extends AbstractController
 {
     #[Route('/product/gestionstock', name: 'gestionstock')]
-    public function gestionStock( FarmRepository $farmRepository, ProductRepository $productRepository): Response
+    public function gestionStock(Request $request, EntityManagerInterface $entityManager, FarmRepository $farmRepository, ProductRepository $productRepository): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -28,6 +29,7 @@ class ProductController extends AbstractController
         $farm = $farmRepository->findOneByProducer($userId);
 
         $products = $productRepository->findAll();
+       
         
         return $this->render('product/stock.html.twig', [
             'products' => $products,
@@ -62,6 +64,17 @@ class ProductController extends AbstractController
         
         return $this->renderForm('product/create.html.twig', [
             'formProd' => $form,
+        ]);
+    }
+
+    #[Route('/product/{id}/updatestock', name: 'updatestock_product', requirements: ['id' => '\d+'])]
+    public function updateStock(Product $product, EntityManagerInterface $entityManager): Response
+    {
+        $oldQtt = $product->getQuantity();
+        $product->setQuantity($oldQtt + $_POST['qtt']);
+        $entityManager->flush();
+        return $this->redirectToRoute(route:'gestionstock', parameters: [
+                
         ]);
     }
 }
