@@ -44,6 +44,16 @@ class OrderRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
+    public function findByIdCustomer($id)
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.customer = :id')
+            ->setParameter('id', $id)
+            ->orderBy('o.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
     // /**
     //  * @return Order[] Returns an array of Order objects

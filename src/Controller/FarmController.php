@@ -83,10 +83,10 @@ class FarmController extends AbstractController
     );
     }
 
-    #[Route('/farm/stock', name: 'stock_farm')]
-    public function listStock(ProductRepository $productRepository)
+    #[Route('/farm/{id}/stock', name: 'stock_farm', requirements: ['id' => '\d+'])]
+    public function listStock(Farm $farm, ProductRepository $productRepository)
     {
-        $idFarm = $_POST['idFarm'];
+       $idFarm = $farm->getId();
         $products = $productRepository->findByFarmId($idFarm);
         return $this->render('farm/stock.html.twig', [
             'products'=>$products,

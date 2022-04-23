@@ -23,6 +23,9 @@ class OrderLine
     #[ORM\JoinColumn(onDelete:"Cascade")]
     private Order $order;
 
+    #[ORM\Column(type: 'integer')]
+    private int $quantity;
+
     public function __construct()
     {
         $this->price = new Price();
@@ -65,6 +68,18 @@ class OrderLine
     public function setPrice(Price $price): self
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    public function getQuantity(): ?int
+    {
+        return $this->quantity;
+    }
+
+    public function setQuantity(int $quantity): self
+    {
+        $this->quantity = $quantity;
 
         return $this;
     }
