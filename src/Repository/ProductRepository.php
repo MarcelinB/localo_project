@@ -45,6 +45,17 @@ class ProductRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByFarmId($id)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.farm = :id')
+            ->setParameter('id', $id)
+            ->orderBy('p.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     // /**
     //  * @return Product[] Returns an array of Product objects
     //  */

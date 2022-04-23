@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+	<div class="border-sky-600 border-2 flex flex-row">
+
+		<table class="border-2 border-black">
+			<tbody>
+				{% for product in products %}
+					<tr>
+						<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+							<div class="flex items-center">
+								<div class="flex-shrink-0 w-10 h-10">
+									<img class="w-full h-full rounded-full" src="{{ asset('uploads/' ~ product.image) }}" alt=""/>
+								</div>
+								<div class="ml-3">
+									<p class="text-gray-900 whitespace-no-wrap">
+										{{product.name}}
+									</p>
+								</div>
+							</div>
+						</td>
+						<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+							<form action="" method="post">
+								<input type="number" name="" id="">
+								<select name="mesure" id="" class="w-20">
+									<option value="g">G</option>
+									<option value="kg">Kg</option>
+								</select>
+								<button class="h-10 px-5 m-2 text-purple-100 transition-colors duration-150 bg-purple-600 rounded-lg focus:shadow-outline hover:bg-purple-700" type="submit">Ajouter au panier</button>
+							</form>
+						</td>
+
+					</tr>
+				</tbody>
+			{% endfor %}
+		</table>
+		<div class="border-2 border-lime-500 w-4/12">
+			<p>Mon panier</p>
+		</div>
+	{% endblock %}

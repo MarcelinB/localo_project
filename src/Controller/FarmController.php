@@ -6,6 +6,7 @@ use App\Entity\Farm;
 use App\Entity\User;
 use App\Form\CreateFarmType;
 use App\Repository\FarmRepository;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -59,6 +60,38 @@ class FarmController extends AbstractController
         ]
     );
 
+    }
+
+    #[Route('/farm/list', name: 'list_farm')]
+    public function list(FarmRepository $farmRepository)
+    {
+        $ville = $_POST['ville'];
+        $farms = $farmRepository->findByCity($ville);
+        return $this->render('farm/list.html.twig', [
+            'farms'=>$farms,
+        ]
+    );
+    }
+
+    #[Route('/farm/recherche', name: 'recherche_farm')]
+    public function recherche()
+    {     
+        $farms = [];
+        return $this->render('farm/list.html.twig', [
+            'farms'=>$farms,
+        ]
+    );
+    }
+
+    #[Route('/farm/stock', name: 'stock_farm')]
+    public function listStock(ProductRepository $productRepository)
+    {
+        $idFarm = $_POST['idFarm'];
+        $products = $productRepository->findByFarmId($idFarm);
+        return $this->render('farm/stock.html.twig', [
+            'products'=>$products,
+        ]
+    );
     }
 
 }

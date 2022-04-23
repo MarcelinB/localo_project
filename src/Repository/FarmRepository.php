@@ -54,7 +54,27 @@ class FarmRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
+    public function findOneById($id): ?Farm
+    {
+        return $this->createQueryBuilder('f')
+            ->andWhere('f.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 
+    public function findByCity($ville)
+    {
+        return $this->createQueryBuilder('f')
+            ->andWhere('f.ville = :ville')
+            ->setParameter('ville', $ville)
+            ->orderBy('f.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+    
     // /**
     //  * @return Farm[] Returns an array of Farm objects
     //  */

@@ -20,6 +20,7 @@ class CreateNewProductType extends AbstractType
                 'label' => 'Photo',
             ])
             ->add('quantity', IntegerType::class)
+            ->add('price', IntegerType::class)
         ;
     }
 

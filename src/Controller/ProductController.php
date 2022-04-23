@@ -18,6 +18,7 @@ use Symfony\Component\Uid\Uuid;
 
 class ProductController extends AbstractController
 {
+    
     #[Route('/product/gestionstock', name: 'gestionstock')]
     public function gestionStock(Request $request, EntityManagerInterface $entityManager, FarmRepository $farmRepository, ProductRepository $productRepository): Response
     {
@@ -77,6 +78,18 @@ class ProductController extends AbstractController
         }
         $oldQtt = $product->getQuantity();
         $product->setQuantity($oldQtt + $newQtt);
+        $entityManager->flush();
+        return $this->redirectToRoute(route:'gestionstock', parameters: [
+                
+        ]);
+    }
+
+    #[Route('/product/{id}/updateprice', name: 'updateprice_product', requirements: ['id' => '\d+'])]
+    public function updatePrice(Product $product, EntityManagerInterface $entityManager): Response
+    {
+        
+        $newPrice = $_POST['price'];
+        $product->setPrice($newPrice);
         $entityManager->flush();
         return $this->redirectToRoute(route:'gestionstock', parameters: [
                 

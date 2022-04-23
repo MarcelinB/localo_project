@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints\Image;
 
@@ -30,6 +31,9 @@ class Product
     #[ORM\ManyToOne(targetEntity: "Farm")]
     #[ORM\JoinColumn(onDelete:"Cascade", nullable:false)]
     private Farm $farm;
+
+    #[ORM\Column(type: 'integer')]
+    private $price;
 
     public function getId(): ?int
     {
@@ -94,5 +98,17 @@ class Product
     public function getImageFile() : ?UploadedFile
     {
         return $this->imageFile;
+    }
+
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    public function setPrice(int $price): self
+    {
+        $this->price = $price;
+
+        return $this;
     }
 }
