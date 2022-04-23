@@ -13,8 +13,7 @@ class OrderLine
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Embedded(class:"Price")]
-    private Price $price;
+
 
     #[ORM\ManyToOne(targetEntity: "Product")]
     #[ORM\JoinColumn(onDelete:"Cascade")]
