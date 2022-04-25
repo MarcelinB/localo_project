@@ -51,9 +51,20 @@ class OrderRepository extends ServiceEntityRepository
             ->setParameter('id', $id)
             ->orderBy('o.id', 'ASC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
+
+    public function findOneByIdCustomerAndState($id): ?Order
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.customer = :id')
+            ->andWhere('o.state = :state')
+            ->setParameter('id', $id)
+            ->setParameter('state', 'Achat')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
 
     // /**
     //  * @return Order[] Returns an array of Order objects

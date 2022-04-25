@@ -6,6 +6,8 @@ use App\Entity\Farm;
 use App\Entity\User;
 use App\Form\CreateFarmType;
 use App\Repository\FarmRepository;
+use App\Repository\OrderLineRepository;
+use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -84,12 +86,25 @@ class FarmController extends AbstractController
     }
 
     #[Route('/farm/{id}/stock', name: 'stock_farm', requirements: ['id' => '\d+'])]
-    public function listStock(Farm $farm, ProductRepository $productRepository)
+    public function listStock(OrderLineRepository $orderLineRepository, OrderRepository $orderRepository, Farm $farm, ProductRepository $productRepository)
     {
        $idFarm = $farm->getId();
         $products = $productRepository->findByFarmId($idFarm);
+        $panier = $orderRepository->findOneByIdCustomerAndState($this->getUser());
+        $productsPanier = [];
+        if ($panier <> null)
+        {
+            $productsPanier = $orderLineRepository->findByOrder($panier);
+        } 
+        $tPanier = [];
+        foreach ($productsPanier as $productPanier)
+        {
+            array_push($tPanier, $productPanier->getProduct());
+        }
         return $this->render('farm/stock.html.twig', [
             'products'=>$products,
+            'productsPanier'=>$tPanier,
+            'orderLines'=>$productsPanier,
         ]
     );
     }

@@ -44,6 +44,16 @@ class OrderLineRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
+    public function findByOrder($order)
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.order = :order')
+            ->setParameter('order', $order)
+            ->orderBy('o.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
     // /**
     //  * @return OrderLine[] Returns an array of OrderLine objects

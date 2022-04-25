@@ -23,7 +23,7 @@
 						</td>
 						<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
 							<form action="{{path('create_orderline')}}" method="post">
-                            <input type="hidden" name="id" value="{{product.id}}">
+								<input type="hidden" name="id" value="{{product.id}}">
 								<input type="number" name="qtt" id="">
 								<select name="mesure" id="" class="w-20">
 									<option value="g">G</option>
@@ -39,5 +39,35 @@
 		</table>
 		<div class="border-2 border-lime-500 w-4/12">
 			<p>Mon panier</p>
+			<table>
+
+				{% for productPanier in productsPanier %}
+					<tbody>
+						<tr>
+							<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+								<div class="flex items-center">
+									<div class="flex-shrink-0 w-10 h-10">
+										<img class="w-full h-full rounded-full" src="{{ asset('uploads/' ~ productPanier.image) }}" alt=""/>
+									</div>
+									<div class="ml-3">
+										<p class="text-gray-900 whitespace-no-wrap">
+											{{productPanier.name}}
+											{% for orderLine in orderLines %}
+												{% if orderLine.product.id == productPanier.id %}
+												{{orderLine.quantity}}
+													
+												{% endif %}
+												
+											{% endfor %}
+										</p>
+									</div>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+
+
+				{% endfor %}
+			</table>
 		</div>
 	{% endblock %}
