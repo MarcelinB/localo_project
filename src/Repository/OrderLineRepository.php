@@ -44,6 +44,8 @@ class OrderLineRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
+    
+
     public function findByOrder($order)
     {
         return $this->createQueryBuilder('o')
@@ -52,6 +54,15 @@ class OrderLineRepository extends ServiceEntityRepository
             ->orderBy('o.id', 'ASC')
             ->getQuery()
             ->getResult()
+        ;
+    }
+    public function findOneById($id): ?OrderLine
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult()
         ;
     }
 

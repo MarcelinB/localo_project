@@ -29,6 +29,9 @@ class Order
     #[ORM\Column(type: 'string', length: 255)]
     private $state;
 
+    #[ORM\Column(type: 'decimal', precision:5, scale:2)]
+    private $price = 0;
+
     #[ORM\ManyToOne(targetEntity: "User")]
     #[ORM\JoinColumn(onDelete:"Cascade")]
     private User $customer;
@@ -123,6 +126,18 @@ class Order
     public function setFarm(?Farm $farm): self
     {
         $this->farm = $farm;
+
+        return $this;
+    }
+
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    public function setPrice($price): self
+    {
+        $this->price = $price;
 
         return $this;
     }

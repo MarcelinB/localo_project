@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\OrderLineRepository;
 use Doctrine\ORM\Mapping as ORM;
+use PhpParser\Node\Expr\Cast\Double;
 
 #[ORM\Entity(repositoryClass: OrderLineRepository::class)]
 class OrderLine
@@ -26,10 +27,9 @@ class OrderLine
     #[ORM\Column(type: 'integer')]
     private int $quantity;
 
-    public function __construct()
-    {
-        $this->price = new Price();
-    }
+    #[ORM\Column(type: 'decimal', precision:5, scale:2)]
+    private $price;
+
 
     public function getId(): ?int
     {
@@ -60,12 +60,12 @@ class OrderLine
         return $this;
     }
 
-    public function getPrice(): Price
+    public function getPrice() 
     {
         return $this->price;
     }
 
-    public function setPrice(Price $price): self
+    public function setPrice($price): self
     {
         $this->price = $price;
 

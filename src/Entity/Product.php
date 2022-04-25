@@ -32,7 +32,7 @@ class Product
     #[ORM\JoinColumn(onDelete:"Cascade", nullable:false)]
     private Farm $farm;
 
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: 'decimal', precision:5, scale:2)]
     private $price;
 
     public function getId(): ?int
@@ -105,7 +105,7 @@ class Product
         return $this->price;
     }
 
-    public function setPrice(int $price): self
+    public function setPrice($price): self
     {
         $this->price = $price;
 

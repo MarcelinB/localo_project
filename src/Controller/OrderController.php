@@ -24,8 +24,10 @@ class OrderController extends AbstractController
         $id = $_POST['id'];
         $qtt = $_POST['qtt'];
         $product = $productRepository->findOneById($id);
+        $productPrice = $product->getPrice();
         $farm = $product->getFarm();
-
+        $prixPanier = 0;
+        
         $stockProducts = $productRepository->findByFarmId($farm->getId());
         $flag = false;
         $flagOrderLine = false;
@@ -33,6 +35,8 @@ class OrderController extends AbstractController
         if ($_POST['mesure'] === 'kg') {
             $qtt = $qtt * 1000;
         }
+        $orderLinePrice = ($productPrice * $qtt) / 1000;
+
         $orders = $orderRepository->findByIdCustomer($this->getUser());
         $orderId = null;
         $flagPanier = false;
@@ -63,7 +67,6 @@ class OrderController extends AbstractController
 
         foreach ($tOrderLine as $orderLine) {
 
-
             if ($orderLine->getProduct() === $product) {
                 if ($qtt > $product->getQuantity()) {
                     $this->addFlash(
@@ -72,6 +75,7 @@ class OrderController extends AbstractController
                     );
                 } else {
                     $orderLine->setQuantity($orderLine->getQuantity() + $qtt);
+                    $orderLine->setPrice($orderLine->getPrice() + $orderLinePrice);
                     $product->setQuantity($product->getQuantity() - $qtt);
                     $flagOrderLine = true;
                 }
@@ -88,6 +92,7 @@ class OrderController extends AbstractController
                     $orderLine = new OrderLine();
                     $orderLine->setProduct($product);
                     $orderLine->setQuantity($qtt);
+                    $orderLine->setPrice($orderLinePrice);
                 }
             }
         } else {
@@ -114,6 +119,7 @@ class OrderController extends AbstractController
         $entityManager->persist($product);
         $entityManager->persist($orderLine);
         $entityManager->flush();
+        
 
 
         // création du tableau d'article dans le panier
@@ -132,6 +138,57 @@ class OrderController extends AbstractController
             'id' => $farm->getId(),
             'productsPanier' => $tPanier,
             'orderLines' => $productsPanier,
+            'prixPanier'=>$prixPanier,
         ]);
+    }
+    #[Route('/delete_orderline/{id}', name: 'delete_orderline', requirements: ['id' => '\d+'])]
+    public function delete($id, OrderLineRepository $orderLineRepository, OrderRepository $orderRepository, EntityManagerInterface $entityManager): Response
+    {
+        $orderLine = $orderLineRepository->findOneById($id);
+        $qtt = $orderLine->getQuantity();
+        $product = $orderLine->getProduct();
+        $product->setQuantity($product->getQuantity()+$qtt);
+        $order = $orderRepository->findOneByIdCustomerAndState($this->getUser());
+        $idFarm = $order->getFarm()->getId();
+        
+        $orderLineRepository->remove($orderLine);
+        $entityManager->persist($product);
+        $entityManager->flush();
+        $tOrdersLine = $orderLineRepository->findByOrder($order);
+        if ($tOrdersLine === []){
+            $orderRepository->remove($order);
+        }
+        
+        return $this->redirectToRoute('stock_farm', [
+        'id' => $idFarm,]
+        );
+    }
+    #[Route('/valide_order', name: 'valide_order')]
+    public function valideOrder(OrderRepository $orderRepository, OrderLineRepository $orderLineRepository, EntityManagerInterface $entityManager): Response
+    {
+        $order = $orderRepository->findOneByIdCustomerAndState($this->getUser());
+        $orderPrice = 0;
+        $tOrderLines = $orderLineRepository->findByOrder($order);
+        foreach($tOrderLines as $orderLine){
+            $orderPrice = $orderPrice + $orderLine->getPrice();
+        }
+        $order->setPrice($orderPrice);
+        $order->setState('En Attente');
+        $entityManager->flush();
+        return $this->redirectToRoute('list_orders');
+        
+        
+    }
+
+    #[Route('/list_orders', name: 'list_orders')]
+    public function listOrder(OrderRepository $orderRepository): Response
+    {
+        $orders = $orderRepository->findByIdCustomer($this->getUser());
+        
+        return $this->render('order/listOrders.html.twig', [
+            'orders'=>$orders,
+        ]);
+        
+        
     }
 }

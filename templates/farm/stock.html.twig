@@ -4,9 +4,9 @@
 
 {% block body %}
 	{% for message in app.flashes('success') %}
-	            <div class="alert alert-success text-red-900">
-                {{ message }}
-            </div>
+		<div class="alert alert-success text-red-900">
+			{{ message }}
+		</div>
 	{% endfor %}
 	<div class="border-sky-600 border-2 flex flex-row">
 
@@ -22,7 +22,21 @@
 								<div class="ml-3">
 									<p class="text-gray-900 whitespace-no-wrap">
 										{{product.name}}
+										stock :
+										{% if product.quantity > 1000 %}
+											{{product.quantity / 1000 }}
+											kg
+										{% else %}
+
+											{{product.quantity}}
+											g
+										{% endif %}
 									</p>
+									<p class="text-gray-900 whitespace-no-wrap">
+										{{product.price}}€/kg
+
+									</p>
+
 								</div>
 							</div>
 						</td>
@@ -43,7 +57,14 @@
 			{% endfor %}
 		</table>
 		<div class="border-2 border-lime-500 w-4/12">
-			<p>Mon panier</p>
+			<p>Mon panier --  
+				{% set price = 0 %}
+				{% for orderLine in orderLines %}
+				{% set price = price + orderLine.price %}
+					
+				{% endfor %}
+				Total : {{price}}€</p>
+
 			<table>
 
 				{% for productPanier in productsPanier %}
@@ -59,7 +80,16 @@
 											{{productPanier.name}}
 											{% for orderLine in orderLines %}
 												{% if orderLine.product.id == productPanier.id %}
-													{{orderLine.quantity}}
+													{% if orderLine.quantity > 1000 %}
+														{{orderLine.quantity / 1000 }}
+														kg
+													{% else %}
+
+														{{orderLine.quantity}}
+														g
+													{% endif %}
+													<p>{{orderLine.price}}€</p>
+													<a href="{{path('delete_orderline', {id: orderLine.id})}}">Supprimer</a>
 
 												{% endif %}
 
@@ -74,5 +104,7 @@
 
 				{% endfor %}
 			</table>
+			<a href="{{path('valide_order')}}"><button class="h-10 px-5 m-2 text-purple-100 transition-colors duration-150 bg-purple-600 rounded-lg focus:shadow-outline hover:bg-purple-700">Valider mon panier</button></a>
+
 		</div>
 	{% endblock %}

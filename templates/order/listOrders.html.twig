@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello OrderController!{% endblock %}
+
+{% block body %}
+{% for order in orders %}
+{{order.id }} {{order.state}}
+    
+{% endfor %}
+{% endblock %}
