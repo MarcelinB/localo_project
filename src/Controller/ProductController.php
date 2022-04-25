@@ -29,7 +29,7 @@ class ProductController extends AbstractController
         /** @var Farm $farm */
         $farm = $farmRepository->findOneByProducer($userId);
 
-        $products = $productRepository->findAll();
+        $products = $productRepository->findByFarmId($farm);
        
         
         return $this->render('product/stock.html.twig', [

@@ -3,6 +3,11 @@
 {% block title %}{% endblock %}
 
 {% block body %}
+	{% for message in app.flashes('success') %}
+	            <div class="alert alert-success text-red-900">
+                {{ message }}
+            </div>
+	{% endfor %}
 	<div class="border-sky-600 border-2 flex flex-row">
 
 		<table class="border-2 border-black">
@@ -24,7 +29,7 @@
 						<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
 							<form action="{{path('create_orderline')}}" method="post">
 								<input type="hidden" name="id" value="{{product.id}}">
-								<input type="number" name="qtt" id="">
+								<input type="number" name="qtt" id="" required="required">
 								<select name="mesure" id="" class="w-20">
 									<option value="g">G</option>
 									<option value="kg">Kg</option>
@@ -54,10 +59,10 @@
 											{{productPanier.name}}
 											{% for orderLine in orderLines %}
 												{% if orderLine.product.id == productPanier.id %}
-												{{orderLine.quantity}}
-													
+													{{orderLine.quantity}}
+
 												{% endif %}
-												
+
 											{% endfor %}
 										</p>
 									</div>

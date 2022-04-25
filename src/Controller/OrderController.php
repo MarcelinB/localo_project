@@ -25,7 +25,8 @@ class OrderController extends AbstractController
         $qtt = $_POST['qtt'];
         $product = $productRepository->findOneById($id);
         $farm = $product->getFarm();
-        $products = $productRepository->findByFarmId($farm->getId());
+
+        $stockProducts = $productRepository->findByFarmId($farm->getId());
         $flag = false;
         $flagOrderLine = false;
 
@@ -34,15 +35,24 @@ class OrderController extends AbstractController
         }
         $orders = $orderRepository->findByIdCustomer($this->getUser());
         $orderId = null;
+        $flagPanier = false;
+
 
         // Si commande en cours je flag à true et je trouve l'id de cette commande
 
         foreach ($orders as $testorder) {
             if (($testorder->getCustomer() === $this->getUser()) && ($testorder->getState() === 'Achat')) {
                 $flag = true;
-                $orderId = $testorder->getId();;
+                $orderTest = $testorder;
+                $orderId = $testorder->getId();
+
+                // Initialisation d'un flag pour éviter qu'un panier concerne plusieurs fermes.
+                if ($product->getFarm() !== $orderTest->getFarm()) {
+                    $flagPanier = true;
+                }
             }
         }
+
 
         // Je trouve toutes les lignes de commandes de cette commande
 
@@ -52,29 +62,43 @@ class OrderController extends AbstractController
         // j'ajoute la quantité à cette ligne de commande, sinon nouvelle ligne de commande.
 
         foreach ($tOrderLine as $orderLine) {
+
+
             if ($orderLine->getProduct() === $product) {
-                $orderLine->setQuantity($orderLine->getQuantity() + $qtt);
-                $flagOrderLine = true;
+                if ($qtt > $product->getQuantity()) {
+                    $this->addFlash(
+                        'success',
+                        'Stock de ' . $product->getName() . ' insuffisant ! Stock disponible : ' . $product->getQuantity() . ' g'
+                    );
+                } else {
+                    $orderLine->setQuantity($orderLine->getQuantity() + $qtt);
+                    $product->setQuantity($product->getQuantity() - $qtt);
+                    $flagOrderLine = true;
+                }
             }
         }
-        if (!$flagOrderLine) {
-            $orderLine = new OrderLine();
-            $orderLine->setProduct($product);
-            $orderLine->setQuantity($qtt);
+        if (!$flagPanier) {
+            if (!$flagOrderLine) {
+                if ($qtt > $product->getQuantity()) {
+                    $this->addFlash(
+                        'success',
+                        'Stock de ' . $product->getName() . ' insuffisant ! Stock disponible : ' . $product->getQuantity() . ' g'
+                    );
+                } else {
+                    $orderLine = new OrderLine();
+                    $orderLine->setProduct($product);
+                    $orderLine->setQuantity($qtt);
+                }
+            }
+        } else {
+            $this->addFlash(
+                'success',
+                'Votre panier concerne une autre ferme. Veuillez vider votre panier ou le valider'
+            );
         }
 
-        // Si je n'ai aucune commandes j'en créé une.
-        if ($orders === []) {
-            $order = new Order();
-            $order->setCustomer($this->getUser());
-            $order->setFarm($farm);
-            $orderLine->setOrder($order);
-
-            $order->setState('Achat');
-            $entityManager->persist($order);
-        }
         // Si le client n'a aucune commande en cours j'en créé une.
-        if (!$flag) {
+        if ((!$flag) ||  ($orders === [])) {
             $order = new Order();
             $order->setCustomer($this->getUser());
             $order->setFarm($farm);
@@ -87,6 +111,7 @@ class OrderController extends AbstractController
             $orderLine->setOrder($testorder);
         }
 
+        $entityManager->persist($product);
         $entityManager->persist($orderLine);
         $entityManager->flush();
 
