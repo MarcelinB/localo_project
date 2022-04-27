@@ -54,6 +54,16 @@ class OrderRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findByIdFarm($farm)
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.farm = :farm')
+            ->setParameter('farm', $farm)
+            ->orderBy('o.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findOneByIdCustomerAndState($id): ?Order
     {
         return $this->createQueryBuilder('o')
@@ -61,6 +71,14 @@ class OrderRepository extends ServiceEntityRepository
             ->andWhere('o.state = :state')
             ->setParameter('id', $id)
             ->setParameter('state', 'Achat')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+    public function findOneById($id): ?Order
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.id = :id')
+            ->setParameter('id', $id)
             ->getQuery()
             ->getOneOrNullResult();
     }

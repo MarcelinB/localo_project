@@ -7,6 +7,7 @@ use App\Entity\OrderLine;
 use App\Repository\OrderLineRepository;
 use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\DateImmutableType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,7 +28,7 @@ class OrderController extends AbstractController
         $productPrice = $product->getPrice();
         $farm = $product->getFarm();
         $prixPanier = 0;
-        
+
         $stockProducts = $productRepository->findByFarmId($farm->getId());
         $flag = false;
         $flagOrderLine = false;
@@ -92,6 +93,7 @@ class OrderController extends AbstractController
                     $orderLine = new OrderLine();
                     $orderLine->setProduct($product);
                     $orderLine->setQuantity($qtt);
+                    $product->setQuantity($product->getQuantity() - $qtt);
                     $orderLine->setPrice($orderLinePrice);
                 }
             }
@@ -119,7 +121,7 @@ class OrderController extends AbstractController
         $entityManager->persist($product);
         $entityManager->persist($orderLine);
         $entityManager->flush();
-        
+
 
 
         // création du tableau d'article dans le panier
@@ -138,7 +140,7 @@ class OrderController extends AbstractController
             'id' => $farm->getId(),
             'productsPanier' => $tPanier,
             'orderLines' => $productsPanier,
-            'prixPanier'=>$prixPanier,
+            'prixPanier' => $prixPanier,
         ]);
     }
     #[Route('/delete_orderline/{id}', name: 'delete_orderline', requirements: ['id' => '\d+'])]
@@ -147,20 +149,23 @@ class OrderController extends AbstractController
         $orderLine = $orderLineRepository->findOneById($id);
         $qtt = $orderLine->getQuantity();
         $product = $orderLine->getProduct();
-        $product->setQuantity($product->getQuantity()+$qtt);
+        $product->setQuantity($product->getQuantity() + $qtt);
         $order = $orderRepository->findOneByIdCustomerAndState($this->getUser());
         $idFarm = $order->getFarm()->getId();
-        
+
         $orderLineRepository->remove($orderLine);
         $entityManager->persist($product);
         $entityManager->flush();
         $tOrdersLine = $orderLineRepository->findByOrder($order);
-        if ($tOrdersLine === []){
+        if ($tOrdersLine === []) {
             $orderRepository->remove($order);
         }
-        
-        return $this->redirectToRoute('stock_farm', [
-        'id' => $idFarm,]
+
+        return $this->redirectToRoute(
+            'stock_farm',
+            [
+                'id' => $idFarm,
+            ]
         );
     }
     #[Route('/valide_order', name: 'valide_order')]
@@ -169,26 +174,57 @@ class OrderController extends AbstractController
         $order = $orderRepository->findOneByIdCustomerAndState($this->getUser());
         $orderPrice = 0;
         $tOrderLines = $orderLineRepository->findByOrder($order);
-        foreach($tOrderLines as $orderLine){
+        foreach ($tOrderLines as $orderLine) {
             $orderPrice = $orderPrice + $orderLine->getPrice();
         }
         $order->setPrice($orderPrice);
         $order->setState('En Attente');
+        $order->setOrderedAt(new DateTimeImmutable());
         $entityManager->flush();
         return $this->redirectToRoute('list_orders');
-        
-        
     }
 
     #[Route('/list_orders', name: 'list_orders')]
     public function listOrder(OrderRepository $orderRepository): Response
     {
         $orders = $orderRepository->findByIdCustomer($this->getUser());
-        
+
         return $this->render('order/listOrders.html.twig', [
-            'orders'=>$orders,
+            'orders' => $orders,
         ]);
+    }
+
+    #[Route('/accept_order/{id}', name: 'accept_order', requirements: ['id' => '\d+'])]
+    public function acceptOrder($id, OrderRepository $orderRepository, EntityManagerInterface $entityManager): Response
+    {
+        $order = $orderRepository->findOneById($id);
+        $order->setAcceptedAt(new DateTimeImmutable());
+        if ($order->getState() !== 'Refusée') {
+            $order->setState('Acceptée');
+            $entityManager->flush();
+        }
+        return $this->redirectToRoute('list_orders_farm');
+    }
+
+    #[Route('/refuse_order/{id}', name: 'refuse_order', requirements: ['id' => '\d+'])]
+    public function refuseOrder($id, OrderRepository $orderRepository, EntityManagerInterface $entityManager): Response
+    {
+        $order = $orderRepository->findOneById($id);
+        $order->setRefusedAt(new DateTimeImmutable());
+        if ($order->getState() !== 'Acceptée') {
+            $order->setState('Refusée');
+            $entityManager->flush();
+        }
+        return $this->redirectToRoute('list_orders_farm');
+    }
+    #[Route('/detail_order/{id}', name: 'detail_order', requirements: ['id' => '\d+'])]
+    public function detailOrder($id, OrderLineRepository $orderLineRepository): Response
+    {
         
-        
+       $ordersLines = $orderLineRepository->findByOrder($id);
+        return $this->render('order/detailOrder.html.twig', [
+            'ordersLines'=>$ordersLines,
+        ]);
+
     }
 }

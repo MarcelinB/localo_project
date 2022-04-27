@@ -4,7 +4,7 @@
 
 {% block body %}
 {% for order in orders %}
-{{order.id }} {{order.state}}
+{{order.id }} {{order.state}} <a href="{{path('detail_order', {id: order.id})}}">Détail</a>
     
 {% endfor %}
 {% endblock %}

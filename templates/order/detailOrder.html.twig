@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello OrderController!{% endblock %}
+
+{% block body %}
+{% for orderLine in ordersLines %}
+{{orderLine.product.name}}
+<img src="{{ asset('uploads/' ~ orderLine.product.image) }}" alt="">
+    
+{% endfor %}
+{% endblock %}

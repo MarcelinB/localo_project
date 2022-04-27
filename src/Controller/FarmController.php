@@ -31,21 +31,19 @@ class FarmController extends AbstractController
 
         $form = $this->createForm(CreateFarmType::class, data: $farm);
         $form->handleRequest($request);
-        
-        if($form->isSubmitted()&& $form->isValid()){
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $farm->setImage(sprintf('%s.%s', Uuid::v4(), $farm->getImageFile()->getClientOriginalExtension()));
             $farm->getImageFile()->move(directory: $uploadDir, name: $farm->getImage());
             $entityManager->persist($farm);
             $entityManager->flush();
 
-            return $this->redirectToRoute(route:'index', parameters: [
-                
-            ]);
+            return $this->redirectToRoute(route: 'index', parameters: []);
         }
 
 
         return $this->renderForm('farm/create.html.twig', parameters: [
-            'formFarm'=> $form
+            'formFarm' => $form
         ]);
     }
 
@@ -56,12 +54,13 @@ class FarmController extends AbstractController
         $user = $this->getUser();
         $userId = $user->getId();
         $farm = $farmRepository->findOneByProducer($userId);
-        
-        return $this->render('farm/consult.html.twig', [
-            'farm'=>$farm
-        ]
-    );
 
+        return $this->render(
+            'farm/consult.html.twig',
+            [
+                'farm' => $farm
+            ]
+        );
     }
 
     #[Route('/farm/list', name: 'list_farm')]
@@ -69,44 +68,67 @@ class FarmController extends AbstractController
     {
         $ville = $_POST['ville'];
         $farms = $farmRepository->findByCity($ville);
-        return $this->render('farm/list.html.twig', [
-            'farms'=>$farms,
-        ]
-    );
+        return $this->render(
+            'farm/list.html.twig',
+            [
+                'farms' => $farms,
+            ]
+        );
     }
 
     #[Route('/farm/recherche', name: 'recherche_farm')]
     public function recherche()
-    {     
+    {
         $farms = [];
-        return $this->render('farm/list.html.twig', [
-            'farms'=>$farms,
-        ]
-    );
+        return $this->render(
+            'farm/list.html.twig',
+            [
+                'farms' => $farms,
+            ]
+        );
     }
 
     #[Route('/farm/{id}/stock', name: 'stock_farm', requirements: ['id' => '\d+'])]
     public function listStock(OrderLineRepository $orderLineRepository, OrderRepository $orderRepository, Farm $farm, ProductRepository $productRepository)
     {
-       $idFarm = $farm->getId();
+        $idFarm = $farm->getId();
         $products = $productRepository->findByFarmId($idFarm);
         $panier = $orderRepository->findOneByIdCustomerAndState($this->getUser());
         $productsPanier = [];
-        if ($panier <> null)
-        {
+        if ($panier <> null) {
             $productsPanier = $orderLineRepository->findByOrder($panier);
-        } 
+        }
         $tPanier = [];
-        foreach ($productsPanier as $productPanier)
-        {
+        foreach ($productsPanier as $productPanier) {
             array_push($tPanier, $productPanier->getProduct());
         }
-        return $this->render('farm/stock.html.twig', [
-            'products'=>$products,
-            'productsPanier'=>$tPanier,
-            'orderLines'=>$productsPanier,
-        ]
-    );
+        return $this->render(
+            'farm/stock.html.twig',
+            [
+                'products' => $products,
+                'productsPanier' => $tPanier,
+                'orderLines' => $productsPanier,
+            ]
+        );
     }
 
+    #[Route('/farm/list/orders', name: 'list_orders_farm')]
+    public function listOrdersFarm(FarmRepository $farmRepository, OrderRepository $orderRepository): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        /** @var Farm $farm */
+        $farm = $farmRepository->findOneByProducer($user);
+
+        $orders = $orderRepository->findByIdFarm($farm);
+      
+
+        return $this->render(
+            'order/listOrdersFarm.html.twig',
+            [
+                'orders'=>$orders,
+            ]
+        );
+    }
 }

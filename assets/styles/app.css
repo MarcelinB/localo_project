@@ -10,18 +10,18 @@
 
     /** Form classes **/
     .form-row {
-        @apply mb-2 flex gap-4;
+        @apply mb-2 flex gap-4 text-white;
     }
 
     .form-label {
-        @apply font-semibold w-1/4;
+        @apply font-semibold w-1/4 text-white;
     }
 
     .form-field {
-        @apply rounded border-2 border-gray-200 flex-grow;
+        @apply rounded border-2 border-gray-200 flex-grow text-white;
     }
 
     .form-checkbox {
-        @apply rounded border-2 border-gray-200;
+        @apply rounded border-2 border-gray-200 text-white;
     }
 }

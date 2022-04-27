@@ -4,34 +4,51 @@
 {% endblock %}
 
 {% block body %}
-	<div class="bg-white dark:bg-gray-800 overflow-hidden relative ">
-		<div class="text-start w-1/2 py-12 px-4 sm:px-6 lg:py-16 lg:px-8 z-20">
-			<h2 class="text-3xl font-extrabold text-black dark:text-white sm:text-4xl">
+	<div class="bg-gray-200 overflow-hidden min-h-screen md:grid grid-cols-3">
+		<div class="col-span-2 grid justify-center">
+			<h2 class="text-3xl font-extrabold text-black sm:text-4xl md:mt-5">
 				<span class="block">
 					Vous voulez de la carotte ?
 				</span>
-				<span class="block text-indigo-500">
-					Vous êtes au bon endroit
+				<span class="block text-lime-600">
+					Vous êtes au bon endroit !
 				</span>
 			</h2>
+
+		</div>
+		<div class="bg-gray-200 grid m-auto justify-center">
 			{% if is_granted('ROLE_USER') %}
+				{% if user.gotAFarm == true %}
+					{% if farm == null %}
+						<a href="{{path('create_farm')}}">
+							<button type="button" class="py-4 px-6  bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 focus:ring-offset-indigo-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg ">
+								Créer ma ferme
+							</button>
+						</a>
+					{% endif %}
+
+				{% endif %}
 
 			{% else %}
 
-			
-			<div class="lg:mt-0 lg:flex-shrink-0">
-				<div class="space-x-4 mt-12 inline-flex rounded-md shadow">
-					<a href="login"><button type="button" class="py-4 px-6  bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 focus:ring-offset-indigo-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg ">
-					Se connecter
-					</button></a>
-					<a href="register"><button type="button" class="py-4 px-6  bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 focus:ring-offset-indigo-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg ">
-					S'inscrire
-					</button></a>
+
+				<div class="lg:mt-0 lg:flex-shrink-0">
+					<div class="space-x-4 mt-12 inline-flex rounded-md shadow">
+						<a href="login">
+							<button type="button" class="py-4 px-6 w-40 bg-lime-700 hover:bg-indigo-700 focus:ring-indigo-500 focus:ring-offset-indigo-200 text-white transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg ">
+								Se connecter
+							</button>
+						</a>
+						<a href="register">
+							<button type="button" class="py-4 px-6 w-40 bg-lime-700 hover:bg-indigo-700 focus:ring-indigo-500 focus:ring-offset-indigo-200 text-white transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg ">
+								S'inscrire
+							</button>
+						</a>
+					</div>
 				</div>
-			</div>
+
 			{% endif %}
 		</div>
-		<img src="https://static.vecteezy.com/ti/vecteur-libre/p2/4930354-carotte-vector-line-for-web-presentation-logo-icon-symbol-gratuit-vectoriel.jpg" class="absolute h-full max-w-1/2 hidden lg:block right-0 top-0"/>
 	</div>
 
 {% endblock %}

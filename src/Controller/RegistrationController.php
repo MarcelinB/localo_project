@@ -42,6 +42,10 @@ class RegistrationController extends AbstractController
                 $request
             );
         }
+        if($form->get('gotAFarm')->getData()){
+            return $this->redirectToRoute('create_farm');
+        };
+
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),

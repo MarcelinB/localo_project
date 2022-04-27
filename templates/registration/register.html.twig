@@ -1,15 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Register
+{% endblock %}
 
 {% block body %}
-    
-    <div class="container mx-auto mt-10 max-w-2xl">
-    {{ form_start(registrationForm) }}
-        {{ form_widget(registrationForm) }}
 
-        <button type="submit" class='mt-4 bg-indigo-500 hover:bg-indigo-200 text-white rounded p-4 w-full'>S'inscire</button>
-    {{ form_end(registrationForm) }}
-    </div>
-   
+	<div class="bg-gray-200 overflow-hidden min-h-screen grid md:grid-cols-4">
+		<div class="col-span-2 col-start-2 mt-5">
+			{{ form_start(registrationForm) }}
+			{{ form_widget(registrationForm) }}
+
+			<button type="submit" class='mt-4 bg-lime-700 hover:bg-indigo-700 text-white rounded p-4 w-full'>S'inscire</button>
+			{{ form_end(registrationForm) }}</div>
+	</div>
+
 {% endblock %}
