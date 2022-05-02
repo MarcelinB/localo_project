@@ -4,11 +4,21 @@
 {% endblock %}
 
 {% block body %}
-	<div class="border-black border-2 grid md:grid-cols-4">
+	<div class=" grid md:grid-cols-4">
 		{% include "component/sidebar_farm.html.twig" %}
-		<div class="md:col-span-3 md:col-start-2">
-        
-        </div>
+		<div class="md:col-span-3 md:col-start-2 grid-flow-col ">
+			<div class="grid grid-cols-2 gap-1 ml-1 mt-2">
+				<div class=''>
+				<img class= "spect-video w-" src="{{ asset('uploads/' ~ farm.image) }}" alt=""></div>
+				<div class=' md:mt-5 grid justify-center'>
+				<h1 class="grid justify-center text-3xl font-extrabold text-lime-600 sm:text-4xl">{{farm.name}}</h1>
+				<p class="font-extrabold">Adresse : {{farm.adress}} {{farm.ville}}</p>
+				</div>
+				<div class='font-extrabold col-span-2'>
+				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p></div>
+
+			</div>
+		</div>
 
 	</div>
 

@@ -15,12 +15,18 @@ class CreateNewProductType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class)
+            ->add('name', TextType::class, options: [
+                'label'=>'Nom'
+            ])
             ->add('imageFile', type:FileType::class, options: [
                 'label' => 'Photo',
             ])
-            ->add('quantity', IntegerType::class)
-            ->add('price', IntegerType::class)
+            ->add('quantity', IntegerType::class, options: [
+                'label'=>'Quantité en stock'
+            ])
+            ->add('price', IntegerType::class,  options: [
+                'label'=>'Prix kg/€'
+            ])
         ;
     }
 
