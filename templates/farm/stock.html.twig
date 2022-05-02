@@ -8,20 +8,21 @@
 			{{ message }}
 		</div>
 	{% endfor %}
-	<div class="bg-gray-200 border-2 flex flex-row">
+	<div class="md:grid md:grid-cols-6">
 
-		<table class="border-2 border-black">
+		<table class="col-span-4">
 			<tbody>
 				{% for product in products %}
 					<tr>
-						<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-							<div class="flex items-center">
+						<td class="text-sm">
+							<div class="ml-2 flex items-center">
 								<div class="flex-shrink-0 w-10 h-10">
 									<img class="w-full h-full rounded-full" src="{{ asset('uploads/' ~ product.image) }}" alt=""/>
 								</div>
 								<div class="ml-3">
-									<p class="text-gray-900 whitespace-no-wrap">
-										{{product.name}}
+									<p class="text-blue-400 text-xs whitespace-no-wrap">
+										{{product.name|upper}}</p>
+										<p class="text-rose-400 text-xs">
 										stock :
 										{% if product.quantity > 1000 %}
 											{{product.quantity / 1000 }}
@@ -32,7 +33,7 @@
 											g
 										{% endif %}
 									</p>
-									<p class="text-gray-900 whitespace-no-wrap">
+									<p class="text-yellow-600 whitespace-no-wrap">
 										{{product.price}}€/kg
 
 									</p>
@@ -43,12 +44,12 @@
 						<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
 							<form action="{{path('create_orderline')}}" method="post">
 								<input type="hidden" name="id" value="{{product.id}}">
-								<input type="number" name="qtt" id="" required="required">
-								<select name="mesure" id="" class="w-20">
+								<input class="w-200 text-center mx-2 rounded-2xl border-1 border-green-600 " type="number" name="qtt" id="" required="required">
+								<select name="mesure" id="" class="ml-2 w-20 rounded-2xl border-1 border-green-600">
 									<option value="g">G</option>
 									<option value="kg">Kg</option>
 								</select>
-								<button class="h-10 px-5 m-2 text-purple-100 transition-colors duration-150 bg-purple-600 rounded-lg focus:shadow-outline hover:bg-purple-700" type="submit">Ajouter au panier</button>
+								<button class="ml-2 bg-pink-200 hover:bg-pink-500 hover:text-white text-pink-500 text-center py-2 px-4 rounded" type="submit">Ajouter au panier</button>
 							</form>
 						</td>
 
@@ -56,28 +57,27 @@
 				</tbody>
 			{% endfor %}
 		</table>
-		<div class="border-2 border-lime-500 w-4/12">
-			<p>Mon panier --  
+		<div class="col-span-2  bg-slate-200 text">
+			<h1 class="text-center text-xl text-green-600">Mon panier --  
 				{% set price = 0 %}
 				{% for orderLine in orderLines %}
 				{% set price = price + orderLine.price %}
 					
 				{% endfor %}
-				Total : {{price}}€</p>
+				Total : {{price}}€</h1>
 
 			<table>
 
 				{% for productPanier in productsPanier %}
 					<tbody>
 						<tr>
-							<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+							<td class="px-5 py-5 border-b border-gray-200 bg-slate-200 text-sm">
 								<div class="flex items-center">
 									<div class="flex-shrink-0 w-10 h-10">
 										<img class="w-full h-full rounded-full" src="{{ asset('uploads/' ~ productPanier.image) }}" alt=""/>
 									</div>
 									<div class="ml-3">
-										<p class="text-gray-900 whitespace-no-wrap">
-											{{productPanier.name}}
+										<p class="text-gray-900 text-xs whitespace-no-wrap">
 											{% for orderLine in orderLines %}
 												{% if orderLine.product.id == productPanier.id %}
 													{% if orderLine.quantity > 1000 %}
@@ -87,9 +87,10 @@
 
 														{{orderLine.quantity}}
 														g
-													{% endif %}
-													<p>{{orderLine.price}}€</p>
-													<a href="{{path('delete_orderline', {id: orderLine.id})}}">Supprimer</a>
+													{% endif %} de 
+											{{productPanier.name|upper}}
+													<p class="text-xs">Prix : {{orderLine.price}}€</p>
+													<a class="text-xs text-red-600" href="{{path('delete_orderline', {id: orderLine.id})}}">Supprimer</a>
 
 												{% endif %}
 
@@ -104,7 +105,7 @@
 
 				{% endfor %}
 			</table>
-			<a href="{{path('valide_order')}}"><button class="h-10 px-5 m-2 text-purple-100 transition-colors duration-150 bg-purple-600 rounded-lg focus:shadow-outline hover:bg-purple-700">Valider mon panier</button></a>
+			<a href="{{path('valide_order')}}"><button class="mt-4 bg-lime-600 hover:bg-indigo-500 text-white rounded p-4 w-full">Valider mon panier</button></a>
 
 		</div>
 	{% endblock %}
