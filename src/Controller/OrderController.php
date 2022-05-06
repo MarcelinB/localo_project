@@ -8,6 +8,7 @@ use App\Repository\FarmRepository;
 use App\Repository\OrderLineRepository;
 use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
+use App\Repository\SlotRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\DateImmutableType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class OrderController extends AbstractController
 {
     #[Route('/order_line', name: 'create_orderline')]
-    public function create(OrderLineRepository $orderLineRepository, OrderRepository $orderRepository, ProductRepository $productRepository, Request $request, EntityManagerInterface $entityManager): Response
+    public function create(SlotRepository $slotRepository ,OrderLineRepository $orderLineRepository, OrderRepository $orderRepository, ProductRepository $productRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         // Déclaration des variables
 
@@ -28,6 +29,8 @@ class OrderController extends AbstractController
         $product = $productRepository->findOneById($id);
         $productPrice = $product->getPrice();
         $farm = $product->getFarm();
+        $slots = $slotRepository->findByFarm($farm->getId());
+        dd($slots);
         $prixPanier = 0;
 
         $flagOrder = false;
@@ -138,6 +141,7 @@ class OrderController extends AbstractController
             'productsPanier' => $tPanier,
             'orderLines' => $productsPanier,
             'prixPanier' => $prixPanier,
+            'slots' => $slots,
         ]);
     }
     #[Route('/delete_orderline/{id}', name: 'delete_orderline', requirements: ['id' => '\d+'])]
@@ -166,8 +170,10 @@ class OrderController extends AbstractController
         );
     }
     #[Route('/valide_order', name: 'valide_order')]
-    public function valideOrder(OrderRepository $orderRepository, OrderLineRepository $orderLineRepository, EntityManagerInterface $entityManager): Response
+    public function valideOrder(SlotRepository $slotRepository, OrderRepository $orderRepository, OrderLineRepository $orderLineRepository, EntityManagerInterface $entityManager): Response
     {
+        $strinSlot = $_POST['slot'];
+        $slot = $slotRepository->findOneByString($strinSlot);
         $order = $orderRepository->findOneByIdCustomerAndState($this->getUser());
         $orderPrice = 0;
         $tOrderLines = $orderLineRepository->findByOrder($order);
@@ -176,6 +182,7 @@ class OrderController extends AbstractController
         }
         $order->setPrice($orderPrice);
         $order->setState('En Attente');
+        $order->setSlot($slot);
         $order->setOrderedAt(new DateTimeImmutable());
         $entityManager->flush();
         return $this->redirectToRoute('list_orders');

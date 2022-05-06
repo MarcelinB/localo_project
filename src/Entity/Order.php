@@ -40,6 +40,9 @@ class Order
     #[ORM\JoinColumn(onDelete:"Cascade")]
     private Farm $farm;
 
+    #[ORM\ManyToOne(targetEntity: "Slot")]
+    private Slot $slot;
+
 
     public function getId(): ?int
     {
@@ -138,6 +141,18 @@ class Order
     public function setPrice($price): self
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    public function getSlot(): ?Slot
+    {
+        return $this->slot;
+    }
+
+    public function setSlot(?Slot $slot): self
+    {
+        $this->slot = $slot;
 
         return $this;
     }

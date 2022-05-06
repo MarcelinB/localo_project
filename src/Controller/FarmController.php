@@ -9,6 +9,7 @@ use App\Repository\FarmRepository;
 use App\Repository\OrderLineRepository;
 use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
+use App\Repository\SlotRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -89,9 +90,10 @@ class FarmController extends AbstractController
     }
 
     #[Route('/farm/{id}/stock', name: 'stock_farm', requirements: ['id' => '\d+'])]
-    public function listStock(OrderLineRepository $orderLineRepository, OrderRepository $orderRepository, Farm $farm, ProductRepository $productRepository)
+    public function listStock(SlotRepository $slotRepository, OrderLineRepository $orderLineRepository, OrderRepository $orderRepository, Farm $farm, ProductRepository $productRepository)
     {
         $idFarm = $farm->getId();
+        $slots = $slotRepository->findByFarm($idFarm);
         $products = $productRepository->findByFarmId($idFarm);
         $panier = $orderRepository->findOneByIdCustomerAndState($this->getUser());
         $productsPanier = [];
@@ -108,6 +110,7 @@ class FarmController extends AbstractController
                 'products' => $products,
                 'productsPanier' => $tPanier,
                 'orderLines' => $productsPanier,
+                'slots' => $slots,
             ]
         );
     }
@@ -122,13 +125,55 @@ class FarmController extends AbstractController
         $farm = $farmRepository->findOneByProducer($user);
 
         $orders = $orderRepository->findByIdFarm($farm);
-      
+
 
         return $this->render(
             'order/listOrdersFarm.html.twig',
             [
-                'orders'=>$orders,
+                'orders' => $orders,
             ]
         );
+    }
+    #[Route('/farm/update', name: 'update_farm')]
+    public function update(FarmRepository $farmRepository, Request $request, EntityManagerInterface $entityManager, string $uploadDir): Response
+    {
+
+        /** @var User $user */
+        $user = $this->getUser();
+        $farm = $farmRepository->findOneByProducer($user);
+
+
+        $form = $this->createForm(CreateFarmType::class, data: $farm);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $farm->setImage(sprintf('%s.%s', Uuid::v4(), $farm->getImageFile()->getClientOriginalExtension()));
+            $farm->getImageFile()->move(directory: $uploadDir, name: $farm->getImage());
+            $entityManager->persist($farm);
+            $entityManager->flush();
+
+            return $this->redirectToRoute(route: 'index', parameters: []);
+        }
+
+        return $this->renderForm('farm/update.html.twig', parameters: [
+            'formFarm' => $form,
+            'farm' => $farm,
+        ]);
+    }
+
+    #[Route('/farm/delete', name: 'delete_farm')]
+    public function delete(FarmRepository $farmRepository, EntityManagerInterface $entityManager): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $user->setGotAFarm(false);
+        $farm = $farmRepository->findOneByProducer($user);
+
+
+        $farmRepository->remove($farm);
+        $entityManager->persist($farm);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('logout');
     }
 }

@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello SlotController!
+{% endblock %}
+
+{% block body %}
+	<div id="glob">
+		<div id="choix" class="container mx-auto mt-10 max-w-3xl">
+			<form action="{{path('create_slot')}}" method="post">
+				<label for="day-select">Jour</label>
+
+				<select name="day" id="day-select">
+
+					<option value="lundi">Lundi</option>
+					<option value="mardi">Mardi</option>
+					<option value="mercredi">Mercredi</option>
+					<option value="jeudi">Jeudi</option>
+					<option value="vendredi">Vendredi</option>
+					<option value="samedi">Samedi</option>
+					<option value="dimanche">Dimanche</option>
+				</select>
+				De
+				<label for="hour-select"></label>
+
+				<select name="hour1" id="hour-select">
+
+					<option value="08">08</option>
+					<option value="09">09</option>
+					<option value="10">10</option>
+					<option value="11">11</option>
+					<option value="12">12</option>
+					<option value="13">13</option>
+					<option value="14">14</option>
+					<option value="15">15</option>
+					<option value="16">16</option>
+					<option value="17">17</option>
+					<option value="18">18</option>
+					<option value="19">19</option>
+					<option value="20">20</option>
+					<option value="20">21</option>
+				</select>
+				H
+				<select name="minute1" id="minute-select">
+
+					<option value="00">00</option>
+					<option value="15">15</option>
+					<option value="30">30</option>
+					<option value="45">45</option>
+				</select>
+
+				A
+				<select name="hour2" id="hour-select">
+
+					<option value="08">08</option>
+					<option value="09">09</option>
+					<option value="10">10</option>
+					<option value="11">11</option>
+					<option value="12">12</option>
+					<option value="13">13</option>
+					<option value="14">14</option>
+					<option value="15">15</option>
+					<option value="16">16</option>
+					<option value="17">17</option>
+					<option value="18">18</option>
+					<option value="19">19</option>
+					<option value="20">20</option>
+					<option value="20">21</option>
+				</select>
+				H
+				<select name="minute2" id="minute-select">
+
+					<option value="00">00</option>
+					<option value="15">15</option>
+					<option value="30">30</option>
+					<option value="45">45</option>
+				</select>
+                <button type="submit">Ajouter</button>
+			</div>
+		</form>
+	</div>
+{% for slot in slots %}
+<div class="flex justify-center mt-4">
+{{slot.stringSlot}} <a href="{{path('delete_slot', {id: slot.id})}}">Supprimer</a>
+</div>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+<div class="container mx-auto mt-10 max-w-2xl">
+{{ form_start(formFarm) }}
+        {{ form_widget(formFarm) }}
+
+        <button type="submit" class='mt-4 bg-indigo-500 hover:bg-indigo-200 text-white rounded p-4 w-full'>Modifier ma ferme</button>
+    {{ form_end(formFarm) }}
+</div>
+{% endblock %}
