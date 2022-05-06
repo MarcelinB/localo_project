@@ -1,10 +1,44 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello OrderController!{% endblock %}
+
 
 {% block body %}
-{% for order in orders %}
-{{order.id }} {{order.state}} <a href="{{path('detail_order', {id: order.id})}}">Détail</a>
-    
-{% endfor %}
-{% endblock %}
+<table class="table-auto border-separate w-full">
+	<thead>
+		<tr>
+			<th>Ferme</th>
+			<th>Statut</th>
+			<th>Date de la commande</th>
+			<th>Date de refus de la commmande</th>
+
+		</tr>
+	</thead>
+	<tbody>
+
+		{% for order in orders %}
+			<tr>
+				<td class="text-center">
+					{{order.farm.name}}
+				</td>
+
+				<td class="text-center">
+					{{order.state}}
+				</td>
+
+				<td class="text-center">
+					{{order.orderedAt|date("d/m/Y h:m")}}
+				</td>
+
+				{% if order.refusedAt == null %}
+					<td class="bg-slate-500 w-32"></td>
+				{% else %}
+					<td class="text-center">{{order.refusedAt|date("d/m/Y")}}
+					</td>
+				</tdclass="text-center">
+			{% endif %}
+			<td class="text-center">
+				<a class="text-red-500" href="{{path('detail_order', {id: order.id})}}">Afficher le détail</a>
+			</td>
+		</tr>
+	</tbody>
+</td></tbody></tr>{% endfor %}</tbody></table>{% endblock %}

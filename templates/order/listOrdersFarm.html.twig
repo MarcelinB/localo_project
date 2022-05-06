@@ -1,21 +1,45 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello OrderController!
-{% endblock %}
+
+
+
 
 {% block body %}
-	{% for order in orders %}
-		{{order.customer.firstName}}
-		{{order.customer.lastName}}
+<div class="grid md:grid-cols-4">
+{% include "component/sidebar_farm.html.twig" %}
+<div class="md:col-span-3 md:col-start-2">
 
-		{{order.orderedAt|date("d/m/Y h:m")}}
-		statut :
-		{{order.state}}
-		<a href="{{path('detail_order', {id: order.id})}}">Détail</a>
-		{% if order.state == 'En Attente' %}
-			<a href="{{path('accept_order', {id: order.id})}}">Accepter</a>
-			<a href="{{path('refuse_order', {id: order.id})}}">Refuser</a>
-		{% endif %}
-<br>
-	{% endfor %}
-{% endblock %}
+<table class="table-auto border-separate w-full">
+	<thead>
+		<tr>
+			<th>Client</th>
+			<th>Statut</th>
+			<th>Date de la commande</th>
+			<th>Détail</th>
+	
+		</tr>
+	</thead>
+	<tbody>
+
+		{% for order in orders %}
+			<tr>
+				<td class="text-center">
+					{{order.customer.firstName}}
+					{{order.customer.lastName}}
+				</td>
+
+				<td class="text-center">
+					{{order.state}}
+				</td>
+
+				<td class="text-center">
+					{{order.orderedAt|date("d/m/Y h:m")}}
+				</td>
+
+			<td class="text-center">
+				<a class="text-red-500" href="{{path('detail_order', {id: order.id})}}">Afficher le détail</a>
+			</td>
+			
+		</tr>
+	</tbody>
+</td></tbody></tr>{% endfor %}</tbody></table></div></div>{% endblock %}

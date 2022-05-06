@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Order;
 use App\Entity\OrderLine;
+use App\Repository\FarmRepository;
 use App\Repository\OrderLineRepository;
 use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
@@ -29,9 +30,9 @@ class OrderController extends AbstractController
         $farm = $product->getFarm();
         $prixPanier = 0;
 
-        $stockProducts = $productRepository->findByFarmId($farm->getId());
-        $flag = false;
+        $flagOrder = false;
         $flagOrderLine = false;
+        $flagPanier = false;
 
         if ($_POST['mesure'] === 'kg') {
             $qtt = $qtt * 1000;
@@ -40,14 +41,13 @@ class OrderController extends AbstractController
 
         $orders = $orderRepository->findByIdCustomer($this->getUser());
         $orderId = null;
-        $flagPanier = false;
 
 
         // Si commande en cours je flag à true et je trouve l'id de cette commande
 
         foreach ($orders as $testorder) {
             if (($testorder->getCustomer() === $this->getUser()) && ($testorder->getState() === 'Achat')) {
-                $flag = true;
+                $flagOrder = true;
                 $orderTest = $testorder;
                 $orderId = $testorder->getId();
 
@@ -67,13 +67,11 @@ class OrderController extends AbstractController
         // j'ajoute la quantité à cette ligne de commande, sinon nouvelle ligne de commande.
 
         foreach ($tOrderLine as $orderLine) {
-
             if ($orderLine->getProduct() === $product) {
                 if ($qtt > $product->getQuantity()) {
                     $this->addFlash(
-                        'success',
-                        'Stock de ' . $product->getName() . ' insuffisant ! Stock disponible : ' . $product->getQuantity() . ' g'
-                    );
+                        'error',
+                        'Stock de ' . $product->getName() . ' insuffisant ! Stock disponible : ' . $product->getQuantity() . ' g');
                 } else {
                     $orderLine->setQuantity($orderLine->getQuantity() + $qtt);
                     $orderLine->setPrice($orderLine->getPrice() + $orderLinePrice);
@@ -86,9 +84,8 @@ class OrderController extends AbstractController
             if (!$flagOrderLine) {
                 if ($qtt > $product->getQuantity()) {
                     $this->addFlash(
-                        'success',
-                        'Stock de ' . $product->getName() . ' insuffisant ! Stock disponible : ' . $product->getQuantity() . ' g'
-                    );
+                        'error',
+                        'Stock de ' . $product->getName() . ' insuffisant ! Stock disponible : ' . $product->getQuantity() . ' g');
                 } else {
                     $orderLine = new OrderLine();
                     $orderLine->setProduct($product);
@@ -99,22 +96,22 @@ class OrderController extends AbstractController
             }
         } else {
             $this->addFlash(
-                'success',
+                'error',
                 'Votre panier concerne une autre ferme. Veuillez vider votre panier ou le valider'
             );
         }
 
         // Si le client n'a aucune commande en cours j'en créé une.
-        if ((!$flag) ||  ($orders === [])) {
+        if ((!$flagOrder) ||  ($orders === [])) {
             $order = new Order();
             $order->setCustomer($this->getUser());
             $order->setFarm($farm);
             $orderLine->setOrder($order);
             $order->setState('Achat');
             $entityManager->persist($order);
-            $flag = false;
+            $flagOrder = false;
         }
-        if ($flag) {
+        if ($flagOrder) {
             $orderLine->setOrder($testorder);
         }
 
@@ -210,21 +207,24 @@ class OrderController extends AbstractController
     public function refuseOrder($id, OrderRepository $orderRepository, EntityManagerInterface $entityManager): Response
     {
         $order = $orderRepository->findOneById($id);
-        $order->setRefusedAt(new DateTimeImmutable());
         if ($order->getState() !== 'Acceptée') {
+            $order->setRefusedAt(new DateTimeImmutable());
             $order->setState('Refusée');
             $entityManager->flush();
         }
         return $this->redirectToRoute('list_orders_farm');
     }
     #[Route('/detail_order/{id}', name: 'detail_order', requirements: ['id' => '\d+'])]
-    public function detailOrder($id, OrderLineRepository $orderLineRepository): Response
+    public function detailOrder($id, FarmRepository $farmRepository, OrderLineRepository $orderLineRepository, OrderRepository $orderRepository): Response
     {
-        
-       $ordersLines = $orderLineRepository->findByOrder($id);
+        $order = $orderRepository->findOneById($id);
+        $idFarm = $orderRepository->findOneById($id)->getFarm()->getId();
+        $idCust = $farmRepository->findOneById($idFarm)->getProducer()->getId();
+        $ordersLines = $orderLineRepository->findByOrder($id);
         return $this->render('order/detailOrder.html.twig', [
-            'ordersLines'=>$ordersLines,
+            'order'=>$order,
+            'id'=>$idCust,
+            'ordersLines' => $ordersLines,
         ]);
-
     }
 }

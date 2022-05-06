@@ -1,11 +1,68 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello OrderController!{% endblock %}
+
 
 {% block body %}
-{% for orderLine in ordersLines %}
-{{orderLine.product.name}}
-<img src="{{ asset('uploads/' ~ orderLine.product.image) }}" alt="">
-    
-{% endfor %}
-{% endblock %}
+<div class="grid md:grid-cols-4">
+{% if id == app.user.id %}
+{% include "component/sidebar_farm.html.twig" %}
+{% endif %}
+
+	<div class="mt-2  md:col-start-3">
+
+		<table class="">
+			<tbody>
+				{% if order.state == "En Attente" %}
+
+
+					{% if id == app.user.id %}
+
+						<td>
+							<a href="{{path('accept_order', {id: order.id}) }}">
+								<button class="mt-4 bg-lime-600 hover:bg-indigo-500 text-white rounded p-4 w-full">Accepter</button>
+							</a>
+							<a href="{{path('refuse_order', {id: order.id}) }}">
+								<button class="mt-4 bg-red-600 hover:bg-indigo-500 text-white rounded p-4 w-full mb-2">Refuser</button>
+							</a>
+						</td>
+
+					{% endif %}
+				{% endif %}
+				{% for orderLine in ordersLines %}
+					<tr>
+
+						<td class="text-sm">
+							<div class="ml-2 flex items-center">
+								<div class="flex-shrink-0 w-20 h-20">
+									<img class="w-full h-full rounded-full" src="{{ asset('uploads/' ~ orderLine.product.image) }}" alt=""/>
+								</div>
+								<div class="ml-3">
+									<p class="text-blue-400 text-xl whitespace-no-wrap">
+										{{orderLine.product.name|upper}}</p>
+									<p class="text-rose-400 text-xl">
+
+										{% if orderLine.quantity > 1000 %}
+											{{orderLine.quantity / 1000 }}
+											kg
+										{% else %}
+
+											{{orderLine.quantity}}
+											g
+										{% endif %}
+									</p>
+									<p class="text-yellow-600 whitespace-no-wrap">
+										{{orderLine.price}}€/kg
+
+									</p>
+
+								</div>
+							</div>
+						</td>
+
+
+					</tr>
+				</tbody>
+			{% endfor %}
+		</table></div>
+
+	{% endblock %}
